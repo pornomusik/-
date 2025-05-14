@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Porno Musik - Official</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Темная палитра, соответствующая референсу */
+            --bg-color-body: #121018; 
+            --overlay-color: rgba(20, 18, 28, 0.78); 
+            --text-primary-color: #e8e8f0; 
+            --text-secondary-color: #a8a8b0; 
+            --card-bg-color: rgba(35, 33, 45, 0.7); 
+            --button-bg-color: rgba(255, 255, 255, 0.07);
+            --button-border-color: rgba(255, 255, 255, 0.25);
+            --button-text-color: #e0e0e5;
+            --button-hover-bg-color: rgba(255, 255, 255, 0.12);
+            --button-hover-border-color: rgba(255, 255, 255, 0.4);
+            --border-light-color: rgba(255, 255, 255, 0.12); 
+            --album-cover-border-color: rgba(255, 255, 255, 0.1); 
+            --album-cover-hover-border-color: rgba(255, 255, 255, 0.3);
+
+            --font-main: 'Open Sans', Arial, sans-serif;
+            --font-headings: 'Montserrat', Arial, sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-color-body);
+            color: var(--text-primary-color);
+            font-family: var(--font-main);
+            text-align: center;
+            line-height: 1.7;
+            position: relative;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .video-background-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -2;
+        }
+
+        .background-video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            transform: translateX(-50%) translateY(-50%);
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 2.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .background-video.visible {
+            opacity: 0.5; 
+        }
+
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--overlay-color);
+            z-index: -1;
+        }
+
+        .page-wrapper {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 1;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: pageFadeInUp 1.2s 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+
+        @keyframes pageFadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        header {
+            padding: 20px 0 40px;
+        }
+
+        .logo-img {
+            width: 550px;
+            max-width: 90%;
+            margin: 0 auto 40px;
+            display: block;
+            /* Добавляем очень тонкую темную тень для глубины */
+            filter: drop-shadow(2px 3px 6px rgba(0, 0, 0, 0.45));
+            animation: logoPulseSubtle 4s infinite alternate ease-in-out; /* Новая анимация */
+        }
+
+        @keyframes logoPulseSubtle { /* Переименована и настроена для большей плавности */
+            0% {
+                transform: scale(1);
+                opacity: 0.88; /* Начальная прозрачность чуть выше */
+            }
+            100% { /* Конечная точка для alternate направления */
+                transform: scale(1.02); /* Чуть меньшее увеличение */
+                opacity: 1;
+            }
+        }
+
+
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 50px;
+        }
+
+        .section-title-main {
+            font-family: var(--font-headings);
+            font-size: 2.2rem;
+            font-weight: 500;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--text-primary-color);
+            margin-bottom: 15px;
+            text-shadow: 0 2px 6px rgba(0,0,0,0.5);
+        }
+        
+        .albums-list {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .album-card {
+            background-color: var(--card-bg-color);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); 
+            width: 100%;
+            max-width: 550px;
+            opacity: 0;
+            transform: translateY(40px) scale(0.98);
+            animation: cardAppear 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .albums-list .album-card:nth-child(1) { animation-delay: 0.5s; }
+        .albums-list .album-card:nth-child(2) { animation-delay: 0.7s; }
+        .albums-list .album-card:nth-child(3) { animation-delay: 0.9s; }
+
+        @keyframes cardAppear {
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .album-card:hover {
+            transform: translateY(-5px) scale(1.01);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.45);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+
+        .album-cover {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), border-color 0.3s ease;
+            border: 2px solid var(--album-cover-border-color); 
+        }
+        .album-cover.large {
+            width: 280px;
+            height: 280px;
+        }
+        .album-card:hover .album-cover {
+            transform: scale(1.05);
+            border-color: var(--album-cover-hover-border-color); 
+        }
+
+        .album-title-sub {
+            font-family: var(--font-headings);
+            font-size: 1.4rem;
+            font-weight: 500;
+            margin: 0 0 20px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--text-primary-color);
+            text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+        }
+
+        .action-button {
+            display: inline-block;
+            padding: 11px 26px;
+            background-color: var(--button-bg-color);
+            border: 1px solid var(--button-border-color);
+            color: var(--button-text-color);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-family: var(--font-headings);
+            letter-spacing: 1.3px;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border-radius: 4px;
+            margin-top: auto;
+        }
+
+        .action-button:hover, .action-button:focus {
+            background-color: var(--button-hover-bg-color);
+            border-color: var(--button-hover-border-color);
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+        }
+        
+        .action-button.primary {
+             background-color: rgba(255, 255, 255, 0.1); 
+             border-color: rgba(255, 255, 255, 0.35);
+        }
+        .action-button.primary:hover {
+             background-color: rgba(255, 255, 255, 0.18);
+             border-color: rgba(255, 255, 255, 0.55);
+        }
+
+
+        .radio-section {
+            margin-top: 30px;
+            padding: 35px 20px;
+            background-color: var(--card-bg-color);
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            opacity: 0;
+            transform: translateY(30px);
+            animation: cardAppear 0.8s 1.1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+
+        .radio-section p {
+            font-family: var(--font-headings);
+            font-size: 1.8rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-secondary-color);
+            font-weight: 400;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            margin-bottom: 15px;
+        }
+
+        .soon-badge {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 7px 20px;
+            background-color: rgba(232, 228, 239, 0.12);
+            color: #c0c0c8;
+            font-size: 0.85rem;
+            border-radius: 20px;
+            text-transform: uppercase;
+            font-weight: 500;
+            border: 1px solid rgba(232, 228, 239, 0.2);
+        }
+
+        footer {
+            margin-top: 50px;
+            padding: 35px 20px 30px;
+            border-top: 1px solid var(--border-light-color);
+            opacity: 0;
+            transform: translateY(30px);
+            animation: cardAppear 1s 1.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+
+        .social-links a {
+            color: var(--text-secondary-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease, transform 0.3s ease;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            padding: 5px;
+             text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .social-links a:hover {
+            color: #fff;
+            transform: translateY(-3px);
+        }
+
+        .admin-panel {
+            display: none;
+            margin: 40px auto;
+            padding: 25px;
+            background-color: rgba(30, 30, 35, 0.92); 
+            border: 1px solid var(--border-light-color);
+            animation: adminPanelFadeIn 0.6s ease-out;
+            color: var(--text-primary-color); 
+            border-radius: 6px;
+            max-width: 600px;
+            position: relative;
+            z-index: 2;
+        }
+        @keyframes adminPanelFadeIn {
+            from { opacity: 0; transform: translateY(15px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .admin-panel h3 {
+            font-family: var(--font-headings);
+            color: #fff;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            text-transform: uppercase;
+        }
+        .email-list {
+            max-height: 220px;
+            overflow-y: auto;
+            text-align: left;
+            margin-top: 15px;
+            padding: 15px;
+            background-color: rgba(0, 0, 0, 0.38);
+            border: 1px solid var(--border-light-color);
+            border-radius: 4px;
+            color: #c8c8d0; 
+            font-size: 0.9rem;
+        }
+        .email-item {
+            padding: 8px 5px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            color: #d8d8e0; 
+        }
+        .email-item:last-child { border-bottom: none; }
+        .admin-panel .action-button { margin-top: 20px; }
+
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(20, 20, 25, 0.94); 
+            justify-content: center;
+            align-items: center;
+            animation: modalBgFadeIn 0.4s ease-out;
+        }
+        @keyframes modalBgFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .modal-content {
+            background-color: #26242f; 
+            padding: 30px;
+            border: 1px solid var(--border-light-color);
+            width: 420px;
+            max-width: 90%;
+            text-align: center;
+            border-radius: 5px;
+            position: relative;
+            transform: scale(0.95) translateY(10px);
+            opacity: 0;
+            animation: modalContentOpen 0.45s 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            color: var(--text-primary-color); 
+            box-shadow: 0 8px 35px rgba(0, 0, 0, 0.55);
+        }
+        @keyframes modalContentOpen {
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .modal-content h2 {
+            font-family: var(--font-headings);
+            color: #fff;
+            margin-bottom: 25px;
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+        .close-modal {
+            position: absolute;
+            top: 12px;
+            right: 15px;
+            font-size: 30px;
+            cursor: pointer;
+            transition: color 0.3s, transform 0.3s;
+            color: #888;
+            line-height: 1;
+        }
+        .close-modal:hover {
+            color: #ccc;
+            transform: rotate(90deg) scale(1.1);
+        }
+
+        .presave-form-container input[type="email"] {
+            margin-bottom: 20px;
+            width: 100%;
+            padding: 13px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--text-primary-color);
+            border-radius: 3px;
+            font-size: 0.95rem;
+            font-family: var(--font-main);
+        }
+        .presave-form-container input[type="email"]::placeholder { color: #888; }
+        .presave-form-container input[type="email"]:focus {
+            border-color: rgba(255,255,255,0.4);
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.1);
+            outline: none;
+        }
+
+        .presave-form-container .action-button { width: 100%; }
+
+        .success-message {
+            display: none;
+            margin-top: 20px;
+            padding: 16px;
+            color: #a5d6a7;
+            border: 1px solid rgba(129, 199, 132, 0.4);
+            border-radius: 4px;
+            background-color: rgba(76, 175, 80, 0.12);
+            font-size: 0.95rem;
+        }
+        .delivery-info {
+            margin-top: 22px;
+            font-size: 0.8rem;
+            color: #aaa;
+            line-height: 1.5;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .logo-img { width: 400px; }
+            .section-title-main { font-size: 1.9rem; }
+            .album-card { max-width: 95%; padding: 25px; }
+            .album-cover.large { width: 220px; height: 220px;}
+            .album-cover { width: 180px; height: 180px;}
+            .radio-section p { font-size: 1.6rem; }
+            .modal-content { width: 90%; padding: 25px; }
+            .modal-content h2 { font-size: 1.4rem; }
+        }
+        @media (max-width: 480px) {
+            .logo-img { width: 300px; margin-bottom: 30px; }
+            .section-title-main { font-size: 1.6rem; }
+            .album-title-sub { font-size: 1.2rem; }
+            .album-cover.large { width: 200px; height: 200px;}
+            .album-cover { width: 160px; height: 160px;}
+            .action-button { padding: 10px 20px; font-size: 0.75rem; }
+            .social-links { gap: 15px; }
+            .social-links a { font-size: 0.8rem; }
+            .page-wrapper { padding: 30px 15px; }
+            .main-content { gap: 30px; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="video-background-wrapper">
+        <div class="video-overlay"></div>
+        <video playsinline autoplay muted loop class="background-video" id="background-video-1">
+            <source src="assets/videos/bg-video1.mp4" type="video/mp4">
+            <source src="assets/videos/bg-video1.webm" type="video/webm">
+            Your browser does not support the video tag.
+        </video>
+        <video playsinline autoplay muted loop class="background-video" id="background-video-2">
+            <source src="assets/videos/bg-video2.mp4" type="video/mp4">
+            <source src="assets/videos/bg-video2.webm" type="video/webm">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+
+    <div class="page-wrapper">
+        <header>
+            <img src="assets/images/logo.png" alt="Porno Musik Logo" class="logo-img">
+        </header>
+
+        <main class="main-content">
+            <section id="music-releases">
+                <div class="albums-list">
+                    <div class="album-card presave-highlight">
+                        <img src="assets/images/album-presave.png" alt="Album Pre-Save Cover" class="album-cover large">
+                        <h2 class="section-title-main">*^Porno Musik🌸+🌷</h2>
+                        <a href="#" class="action-button primary" id="presave-button">Предзаказ Альбома</a>
+                    </div>
+
+                    <div class="album-card">
+                        <img src="assets/images/album-birthdaygirl.png" alt="BIRTHDAYGIRL Cover" class="album-cover">
+                        <h3 class="album-title-sub">BIRTHDAYGIRL</h3>
+                        <a href="https://on.soundcloud.com/jTqKeAzLakAPe4UL7" class="action-button" target="_blank" rel="noopener noreferrer">Listen Now</a>
+                    </div>
+
+                    <div class="album-card">
+                        <img src="assets/images/album-paris.png" alt="Paris Blinked Edition Cover" class="album-cover">
+                        <h3 class="album-title-sub">Paris Blinked Edition</h3>
+                        <a href="https://soundcloud.com/rio-2025/sets/paris?utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing" class="action-button" target="_blank" rel="noopener noreferrer">Listen Now</a>
+                    </div>
+                </div>
+            </section>
+
+            <section id="radio" class="radio-section">
+                <p>PORNO RADIO</p>
+                <div class="soon-badge">SOON</div>
+            </section>
+
+            <div class="admin-panel" id="admin-panel">
+                <h3>Admin Panel</h3>
+                <div class="email-list" id="email-list">
+                </div>
+                <button id="export-emails" class="action-button">Экспорт Email</button>
+            </div>
+        </main>
+
+        <footer>
+            <div class="social-links">
+                <a href="https://soundcloud.com/rio-2025" target="_blank" rel="noopener noreferrer">SoundCloud</a>
+                <a href="https://t.me/+n7fO4C59zVBjZjIy" target="_blank" rel="noopener noreferrer">Telegram</a>
+                <a href="https://x.com/whayeuey" target="_blank" rel="noopener noreferrer">X (Twitter)</a>
+            </div>
+        </footer>
+    </div>
+
+    <div class="modal" id="presave-modal">
+        <div class="modal-content">
+            <span class="close-modal" id="close-modal">×</span>
+            <h2>Предзаказ *^Porno Musik🌸+🌷</h2>
+            <div class="presave-form-container">
+                <form id="presave-form" action="https://formspree.io/f/xdkeroqa" method="POST">
+                    <input type="email" name="email" placeholder="Ваш email" required id="email-input">
+                    <input type="hidden" name="_subject" value="New Album Pre-Save: *^Porno Musik🌸+🌷">
+                    <input type="hidden" name="_language" value="ru">
+                    <input type="hidden" name="_next" value="#success">
+                    <button type="submit" class="action-button primary">Отправить</button>
+                </form>
+                <div class="delivery-info">
+                    Альбом будет доставлен в течении 3 месяцев после 18.04.2025
+                </div>
+            </div>
+            <div class="success-message" id="success-message">
+                Спасибо за предзаказ! Альбом будет доставлен в течении 3 месяцев после 18.04.2025
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const presaveButton = document.getElementById('presave-button');
+            const presaveModal = document.getElementById('presave-modal');
+            const closeModal = document.getElementById('close-modal');
+            const presaveForm = document.getElementById('presave-form');
+            const successMessage = document.getElementById('success-message');
+            const emailInput = document.getElementById('email-input');
+            const emailList = document.getElementById('email-list');
+            const adminPanel = document.getElementById('admin-panel');
+            const exportButton = document.getElementById('export-emails');
+
+            let savedEmails = JSON.parse(localStorage.getItem('preSaveEmails')) || [];
+            let adminKeyPresses = 0;
+            const ADMIN_KEY = 'a';
+            const ADMIN_PRESS_COUNT = 3;
+            let adminKeyTimeout;
+
+            updateEmailList();
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key.toLowerCase() === ADMIN_KEY && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+                    adminKeyPresses++;
+                    clearTimeout(adminKeyTimeout);
+                    adminKeyTimeout = setTimeout(() => {
+                        adminKeyPresses = 0;
+                    }, 1500);
+
+                    if (adminKeyPresses >= ADMIN_PRESS_COUNT) {
+                        adminPanel.style.display = adminPanel.style.display === 'block' ? 'none' : 'block';
+                        adminKeyPresses = 0;
+                        clearTimeout(adminKeyTimeout);
+                    }
+                } else if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+                    adminKeyPresses = 0;
+                    clearTimeout(adminKeyTimeout);
+                }
+            });
+
+            if (presaveButton) {
+                presaveButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    presaveModal.style.display = 'flex';
+                    if(presaveForm) presaveForm.style.display = 'block';
+                    if(successMessage) successMessage.style.display = 'none';
+                    if(emailInput) emailInput.value = '';
+                    setTimeout(() => { if(emailInput) emailInput.focus(); }, 50);
+                });
+            }
+
+            if (closeModal) {
+                closeModal.addEventListener('click', function() {
+                    presaveModal.style.display = 'none';
+                });
+            }
+
+            window.addEventListener('click', function(e) {
+                if (e.target === presaveModal) {
+                    presaveModal.style.display = 'none';
+                }
+            });
+            
+            window.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && presaveModal.style.display === 'flex') {
+                    presaveModal.style.display = 'none';
+                }
+            });
+
+            if (window.location.hash === '#success') {
+                const email = localStorage.getItem('lastEmail');
+                if (email) {
+                    if (!savedEmails.includes(email)) {
+                        savedEmails.push(email);
+                        localStorage.setItem('preSaveEmails', JSON.stringify(savedEmails));
+                        updateEmailList();
+                    }
+                    if (presaveModal) {
+                        presaveModal.style.display = 'flex';
+                        if(presaveForm) presaveForm.style.display = 'none';
+                        if(successMessage) successMessage.style.display = 'block';
+                        setTimeout(() => {
+                            presaveModal.style.display = 'none';
+                            if(presaveForm) presaveForm.style.display = 'block';
+                            if(successMessage) successMessage.style.display = 'none';
+                        }, 4000);
+                    }
+                }
+                history.pushState("", document.title, window.location.pathname + window.location.search);
+                localStorage.removeItem('lastEmail');
+            }
+
+            if (presaveForm) {
+                presaveForm.addEventListener('submit', function(e) {
+                    const currentEmail = emailInput ? emailInput.value.trim() : null;
+                    if (currentEmail) {
+                        localStorage.setItem('lastEmail', currentEmail);
+                    }
+                });
+            }
+
+            if (exportButton) {
+                exportButton.addEventListener('click', function() {
+                    if (savedEmails.length === 0) {
+                        alert('Нет email для экспорта.');
+                        return;
+                    }
+                    const emailsText = savedEmails.join('\n');
+                    const blob = new Blob([emailsText], { type: 'text/plain;charset=utf-8' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = 'preorder-emails.txt';
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                });
+            }
+
+            function updateEmailList() {
+                if (!emailList) return;
+                emailList.innerHTML = '';
+                if (savedEmails.length > 0) {
+                    [...savedEmails].reverse().forEach(email => {
+                        const emailItem = document.createElement('div');
+                        emailItem.className = 'email-item';
+                        emailItem.textContent = email;
+                        emailList.appendChild(emailItem);
+                    });
+                } else {
+                    emailList.innerHTML = '<div style="color: var(--text-secondary-color, #ccc); text-align: center; padding: 10px 0;">Пока нет предзаказов</div>';
+                }
+            }
+
+            const player1 = document.getElementById('background-video-1');
+            const player2 = document.getElementById('background-video-2');
+
+            const videoFiles = [
+                { mp4: 'assets/videos/bg-video1.mp4', webm: 'assets/videos/bg-video1.webm' },
+                { mp4: 'assets/videos/bg-video2.mp4', webm: 'assets/videos/bg-video2.webm' }
+            ];
+
+            if (!player1 || !player2 || videoFiles.length < 1) {
+                console.warn("Video background elements not found or no video files defined. Background video disabled.");
+                if(player1) player1.style.display = 'none';
+                if(player2) player2.style.display = 'none';
+                return;
+            }
+            
+            if (videoFiles.length === 1) {
+                setVideoSource(player1, 0);
+                player1.classList.add('visible');
+                if (player2) player2.style.display = 'none';
+                return;
+            }
+
+            let currentVideoIndex = 0;
+            let activePlayer = player1;
+            let inactivePlayer = player2;
+            let intervalId = null;
+            const switchInterval = 10000; 
+
+            function setVideoSource(player, index) {
+                const sources = player.getElementsByTagName('source');
+                if (index >= 0 && index < videoFiles.length && sources.length >=2) {
+                    sources[0].setAttribute('src', videoFiles[index].mp4);
+                    sources[1].setAttribute('src', videoFiles[index].webm);
+                    player.load();
+                    player.play().catch(e => console.info(`Autoplay for video ${index + 1} might be prevented: ${e.name} - ${e.message}`));
+                } else {
+                    console.error("Invalid video index or insufficient source elements in setVideoSource:", index, sources.length);
+                }
+            }
+            
+            function switchVideo() {
+                if (document.hidden) return; 
+                
+                let nextVideoIndex = (currentVideoIndex + 1) % videoFiles.length;
+                setVideoSource(inactivePlayer, nextVideoIndex);
+
+                const transitionDelay = 150; 
+                const loadTimeout = 2000; 
+
+                let switchOccurred = false;
+                let fallbackTimeoutId;
+
+                const performSwitch = () => {
+                    if (switchOccurred) return;
+                    clearTimeout(fallbackTimeoutId); 
+                    
+                    activePlayer.classList.remove('visible');
+                    inactivePlayer.classList.add('visible');
+
+                    let temp = activePlayer;
+                    activePlayer = inactivePlayer;
+                    inactivePlayer = temp;
+                    
+                    currentVideoIndex = nextVideoIndex;
+                    switchOccurred = true;
+                    if(activePlayer.oncanplaythrough) activePlayer.oncanplaythrough = null; 
+                };
+
+                inactivePlayer.oncanplaythrough = () => {
+                    setTimeout(performSwitch, transitionDelay); 
+                };
+                
+                fallbackTimeoutId = setTimeout(() => {
+                    if (!switchOccurred) {
+                         console.warn(`Video ${nextVideoIndex + 1} 'canplaythrough' event timeout or did not fire. Forcing switch.`);
+                         performSwitch(); 
+                    }
+                }, loadTimeout);
+            }
+            
+            setVideoSource(player1, currentVideoIndex);
+            player1.onloadeddata = () => { 
+                player1.classList.add('visible');
+                player1.onloadeddata = null; 
+                if (videoFiles.length > 1) { 
+                    setVideoSource(player2, (currentVideoIndex + 1) % videoFiles.length);
+                }
+            };
+            setTimeout(() => {
+                if (!player1.classList.contains('visible')) {
+                    player1.classList.add('visible');
+                     if (videoFiles.length > 1) {
+                        setVideoSource(player2, (currentVideoIndex + 1) % videoFiles.length);
+                    }
+                }
+            }, 500); 
+
+
+            if (intervalId) clearInterval(intervalId);
+            if (videoFiles.length > 1) {
+                intervalId = setInterval(switchVideo, switchInterval);
+            }
+        });
+    </script>
+
+</body>
+</html>
